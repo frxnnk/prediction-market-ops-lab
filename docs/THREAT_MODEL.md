@@ -22,7 +22,7 @@ assets handled by this system because the corresponding capabilities are intenti
 | Threat | Control |
 |---|---|
 | Accidental live execution | Central executor rejects every mode except `paper`; no write client exists |
-| Unexpected outbound host | Exact hostname allowlist plus HTTPS-only URLs |
+| Unexpected outbound endpoint | Exact HTTPS scheme, hostname, and path allowlist |
 | Unexpected HTTP mutation | Outbound client exposes GET only |
 | Secret persistence | Ephemeral accounts; API returns only public address and verification result |
 | Sensitive demo artifacts | Synthetic fixtures only; forbidden-content scan in CI |
