@@ -8,8 +8,8 @@ as a code, test, fixture, schema, UI, or documentation source.
 
 | Source | Use | License / status |
 |---|---|---|
-| Polymarket public Gamma API documentation | Read-only market discovery contract | Public documentation |
-| Polymarket public CLOB API documentation | Read-only order-book contract | Public documentation |
+| [Polymarket Gamma market API](https://docs.polymarket.com/api-reference/markets/list-markets) | Read-only market discovery contract | Public documentation |
+| [Polymarket CLOB order book API](https://docs.polymarket.com/api-reference/market-data/get-order-book) | Read-only order-book contract | Public documentation |
 | FastAPI | HTTP API and generated OpenAPI schema | MIT |
 | HTTPX | Bounded outbound HTTP client | BSD-3-Clause |
 | eth-account | Local ephemeral wallet challenge signing | MIT |
