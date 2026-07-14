@@ -73,3 +73,8 @@ class PaperLedger:
                 (limit,),
             ).fetchall()
         return [PaperFillRecord.model_validate(dict(row)) for row in rows]
+
+    def count_fills(self) -> int:
+        with self._connect() as connection:
+            row = connection.execute("SELECT COUNT(*) AS count FROM paper_fills").fetchone()
+        return int(row["count"])
