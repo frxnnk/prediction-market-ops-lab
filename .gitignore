@@ -3,12 +3,13 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 *.pyc
+*.egg-info/
 *.db
 .env
 .env.*
 !.env.example
 node_modules/
 dist/
+*.tsbuildinfo
 coverage/
 .DS_Store
-

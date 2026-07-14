@@ -15,13 +15,16 @@ as a code, test, fixture, schema, UI, or documentation source.
 | eth-account | Local ephemeral wallet challenge signing | MIT |
 | React | Operations dashboard | MIT |
 | Vite | Frontend build tooling | MIT |
+| TypeScript | Static contracts between dashboard and API | Apache-2.0 |
+| Vitest, Testing Library, jsdom | Dashboard behavior tests in a browser-like DOM | MIT |
 
 ## Dependency policy
 
 - Each runtime dependency must map to a concrete MVP requirement.
 - The backend does not depend on a trading SDK because it cannot send, cancel, bridge, transfer,
   or withdraw anything.
-- Test and lint dependencies are development-only.
+- Vitest, Testing Library, jsdom, TypeScript types, pytest, and Ruff are development-only.
+- The frontend runtime contains only React and React DOM; Vite is build tooling.
 - New dependencies require an update to this file explaining their purpose.
 
 ## Data provenance
