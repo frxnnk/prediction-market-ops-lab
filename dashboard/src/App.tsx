@@ -51,7 +51,9 @@ function App() {
     setRunning(true);
     setError(null);
     try {
-      setActivity(await runPaperCycle(market.market_id));
+      const result = await runPaperCycle(market.market_id);
+      setActivity(result);
+      setData(await loadDashboard());
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Paper cycle failed");
     } finally {
