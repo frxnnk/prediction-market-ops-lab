@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import App from "./App";
@@ -21,6 +21,8 @@ const markets = [
   }
 ];
 
+let overviewRequestCount = 0;
+
 function jsonResponse(body: object): Promise<Response> {
   return Promise.resolve(
     new Response(JSON.stringify(body), {
@@ -32,11 +34,18 @@ function jsonResponse(body: object): Promise<Response> {
 
 describe("operations dashboard", () => {
   beforeEach(() => {
+    overviewRequestCount = 0;
     vi.stubGlobal(
       "fetch",
       vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
         const url = String(input);
-        if (url.endsWith("/api/overview")) return jsonResponse(overview);
+        if (url.endsWith("/api/overview")) {
+          overviewRequestCount += 1;
+          return jsonResponse({
+            ...overview,
+            paper_fill_count: overviewRequestCount > 1 ? 1 : 0
+          });
+        }
         if (url.endsWith("/api/markets")) return jsonResponse(markets);
         if (url.endsWith("/api/diagnostics")) {
           return jsonResponse({
@@ -58,6 +67,7 @@ describe("operations dashboard", () => {
   });
 
   afterEach(() => {
+    cleanup();
     vi.unstubAllGlobals();
   });
 
@@ -73,5 +83,19 @@ describe("operations dashboard", () => {
 
     expect(await screen.findByText("dummy-synthetic-weather-001-8")).toBeInTheDocument();
     expect(screen.getByText("SIMULATED")).toBeInTheDocument();
+  });
+
+  it("refreshes the recorded fill count after a successful paper cycle", async () => {
+    render(<App />);
+
+    await screen.findByText("PAPER / SYNTHETIC");
+    const recordedFills = screen.getByText("Recorded fills").closest("div");
+    expect(recordedFills).not.toBeNull();
+    expect(within(recordedFills!).getByText("0")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Run paper cycle" }));
+
+    expect(await within(recordedFills!).findByText("1")).toBeInTheDocument();
+    expect(overviewRequestCount).toBe(2);
   });
 });
