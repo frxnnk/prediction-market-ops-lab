@@ -1,0 +1,51 @@
+name: prediction-market-ops-lab
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      OPS_LAB_DATABASE: /data/paper.db
+      OPS_LAB_PUBLIC_READS: "${OPS_LAB_PUBLIC_READS:-0}"
+      OPS_LAB_SYNTHETIC_AVAILABLE: "${OPS_LAB_SYNTHETIC_AVAILABLE:-1}"
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - paper-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/readyz', timeout=2)
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    ports:
+      - "127.0.0.1:5173:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+volumes:
+  paper-data:
